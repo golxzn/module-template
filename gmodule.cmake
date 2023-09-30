@@ -16,25 +16,26 @@ if(DEFINED GXZN_DISABLED_MODULES AND golxzn::os IN_LIST GXZN_DISABLED_MODULES)
 	return()
 endif()
 
+set(GXZN_GIT_URL https://github.com/golxzn)
+set(${GXZN_NAME}_submodules
+	#subdirectories
+)
+
 list(FILTER GXZN_DISABLED_MODULES INCLUDE REGEX "^golxzn::os::.*")
 message(STATUS "[golxzn/os] Disabled modules: ${GXZN_DISABLED_MODULES}")
 
 add_library(golxzn_${GXZN_NAME} INTERFACE)
 add_library(golxzn::${GXZN_NAME} ALIAS golxzn_${GXZN_NAME})
 
-set(${GXZN_NAEM}_submodules
-	#subdirectories
-)
-
 set(checked_submodules)
-foreach(submodule IN LISTS ${GXZN_NAEM}_submodules)
+foreach(submodule IN LISTS ${GXZN_NAME}_submodules)
 	if (${submodule}_DISABLED OR golxzn::os::${submodule} IN_LIST GXZN_DISABLED_MODULES)
 		continue()
 	endif()
 
 	if (NOT EXISTS ${GXZN_PATH}/${GXZN_NAME}/${submodule})
 		FetchContent_Declare(${GXZN_NAME}-${submodule}
-			GIT_REPOSITORY https://github.com/golxzn/${GXZN_NAME}-${submodule}.git
+			GIT_REPOSITORY ${GXZN_GIT_URL}/${GXZN_NAME}-${submodule}.git
 		)
 		FetchContent_Populate(${GXZN_NAME}-${submodule})
 	endif()
@@ -56,5 +57,5 @@ foreach(submodule IN LISTS checked_submodules)
 	)
 endforeach()
 
-unset(${GXZN_NAEM}_submodules)
+unset(${GXZN_NAME}_submodules)
 unset(checked_submodules)
